@@ -45,10 +45,10 @@ git clone https://github.com/DevDemianM/CRM-PYMES.git
 cd CRM-PYMES
 ```
 
-Si necesitas trabajar en la rama de desarrollo:
+Si necesitas trabajar en la rama de desarrollo o creas tu propia rama:
 
 ```powershell
-git checkout DAMIAN
+git checkout nombre rama
 ```
 
 Instala las dependencias:
