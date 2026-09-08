@@ -26,7 +26,9 @@ CRM-PYMES/
 │   ├── migrations/             # Cambios de estructura de la base de datos
 │   ├── models/                 # Modelos Usuario y Rol
 │   ├── seeders/                # Datos iniciales
-│   ├── index.js                # Servidor Express y endpoint de login
+│   ├── src/                    # Respuestas y servicios de negocio
+│   ├── test/                   # Pruebas automatizadas con Jest
+│   ├── index.js                # Servidor Express y endpoints
 │   ├── package.json            # Dependencias y scripts del backend
 │   ├── .env.example            # Plantilla de variables de entorno
 │   └── .sequelizerc            # Ubicación de la configuración de Sequelize CLI
@@ -152,6 +154,31 @@ Servidor escuchando en http://localhost:3000
 
 Para detener el servidor, presiona `Ctrl + C`.
 
+## Pruebas automatizadas
+
+Desde `backend`, ejecuta:
+
+```powershell
+npm test
+```
+
+Las pruebas verifican que el servicio rechace correos inexistentes y genere un
+token cuando la contraseña sea correcta. Deben terminar mostrando `PASS`.
+
+## Endpoints disponibles
+
+### Comprobar que el servidor está activo
+
+```http
+GET http://localhost:3000/ping
+```
+
+Respuesta:
+
+```text
+pong
+```
+
 ## Endpoint de login
 
 ### Solicitud
@@ -184,16 +211,31 @@ Respuesta exitosa:
 
 ```json
 {
-  "token": "...",
-  "usuario": {
-    "id": 1,
-    "nombre": "Administrador Inicial",
-    "rol": "administrador"
+  "success": true,
+  "data": {
+    "token": "...",
+    "usuario": {
+      "id": 1,
+      "nombre": "Administrador Inicial",
+      "rol": "administrador"
+    }
   }
 }
 ```
 
 La contraseña se verifica con `bcrypt` y el servidor devuelve un token JWT con una duración de 8 horas.
+
+Las respuestas de error utilizan este formato:
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "CREDENCIALES_INVALIDAS",
+    "message": "Correo o contraseña incorrectos"
+  }
+}
+```
 
 Después de cinco intentos incorrectos, la cuenta se bloquea durante cinco minutos.
 
@@ -205,7 +247,7 @@ Después de cinco intentos incorrectos, la cuenta se bloquea durante cinco minut
 | `400` | Faltan correo o contraseña |
 | `401` | Correo o contraseña incorrectos |
 | `423` | Cuenta temporalmente bloqueada |
-| `503` | Base de datos no disponible |
+| `500` | Error interno del servidor |
 
 ## Flujo de trabajo con Git
 
